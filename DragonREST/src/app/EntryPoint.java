@@ -28,11 +28,6 @@ public class EntryPoint {
 	//trigger the moment all the object are initialized 
 	@PostConstruct
 	public void run() throws Exception{
-		sc = new Scanner(System.in);
-		User u = new User();
-		u = (User) createObjectWithValidation(u);
-		System.out.println("Enter name for user:");
-		createUser(u);
 		
 		/*/ SAMPLE QUERY
 			List<User> users = rep.findByName("ed");
@@ -54,7 +49,6 @@ public class EntryPoint {
 		createUser(u, in);
 	}
 	
-	
 	public void createUser(User u, String in){	
 		u.setName(in);
 		u.setBABY_DEAD(0);
@@ -67,41 +61,7 @@ public class EntryPoint {
 		u.setWORD_FOUND_3(0);
 		u.setWORD_FOUND_4(0);
 		rep.save(u);
-		System.out.println("Added");
+		System.out.println("Created new user: " + in + ".");
 	}
 	
-	//I USED BYTEBUDDY LANG MUNA TO TEST IF VALIDATIONS WORK
-	//PERO IT IS STILL FOR USERNAME INPUT PA LANG
-	//EVERYTHING BELOW 
-	public static Object createObjectWithValidation(Object o) throws Exception
-	{
-		Class<?> type = o.getClass();
-        ClassLoader classLoader = type.getClassLoader();
-        Class<?> proxyType = new ByteBuddy()
-                .subclass(type)
-                .method(ElementMatchers.any()) 									// triggers on EVERYTHING                
-                .intercept(InvocationHandlerAdapter.of(new ProxyInvocationHandler(o)))
-                .make()
-                .load(classLoader)
-                .getLoaded();
-        Object proxy = (User) proxyType.newInstance();
-		return proxy;
-	}
-	
-	static class ProxyInvocationHandler implements InvocationHandler
-	{
-		private Object original;
-		public ProxyInvocationHandler(Object o) {
-			original = o;
-		}
-		
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			Validator v = new Validator();
-			v.validate(proxy, args, method);
-			
-			return method.invoke(original, args);
-		}
-		
-	}
 }

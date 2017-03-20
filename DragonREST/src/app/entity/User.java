@@ -6,8 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import methodvalidator.annotations.StringLength;
-
 
 @Entity
 public class User {
@@ -59,7 +57,6 @@ public class User {
 		return name;
 	}
 	
-	@StringLength
 	public void setName(String name) {
 		this.name = name;
 	}
