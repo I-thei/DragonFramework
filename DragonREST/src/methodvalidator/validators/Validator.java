@@ -9,36 +9,29 @@ import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 
 public class Validator 
 {
-	private HashMap<Class<?>, ValidationHandler> map = new HashMap<>();
+	private HashMap<Class<?>, CommandHandler> map = new HashMap<>();
 	
 	public Validator() throws Exception
 	{
-		// init map by scanning
 		ScanResult results = new FastClasspathScanner("methodvalidator.validators").scan();		
-		List<String> allResults = results.getNamesOfClassesWithAnnotation(ValidationAnnotation.class);
-		//System.out.println(allResults);
+		List<String> allResults = results.getNamesOfClassesWithAnnotation(CommandAnnotation.class);
 		for (String s : allResults)
 		{
 			Class<?> c = Class.forName(s);
-			ValidationAnnotation va = (ValidationAnnotation) c.getAnnotation(ValidationAnnotation.class);				
-			//System.out.println(va);				
-			map.put(va.target(), (ValidationHandler) c.newInstance());
+			CommandAnnotation ca = (CommandAnnotation) c.getAnnotation(CommandAnnotation.class);							
+			map.put(ca.target(), (CommandHandler) c.newInstance());
 		}
-	
 	}
 	
 	public Validator(String path) throws Exception
 	{
-		// init map by scanning
 		ScanResult results = new FastClasspathScanner("methodvalidator.validators", path).scan();		
-		List<String> allResults = results.getNamesOfClassesWithAnnotation(ValidationAnnotation.class);
-		//System.out.println(allResults);
+		List<String> allResults = results.getNamesOfClassesWithAnnotation(CommandAnnotation.class);
 		for (String s : allResults)
 		{
 			Class<?> c = Class.forName(s);
-			ValidationAnnotation va = (ValidationAnnotation) c.getAnnotation(ValidationAnnotation.class);				
-			//System.out.println(va);				
-			map.put(va.target(), (ValidationHandler) c.newInstance());
+			CommandAnnotation ca = (CommandAnnotation) c.getAnnotation(CommandAnnotation.class);								
+			map.put(ca.target(), (CommandHandler) c.newInstance());
 		}
 	
 	}
@@ -48,10 +41,10 @@ public class Validator
 		Annotation[] alist = method.getAnnotations();
 		for (Annotation a : alist)
 		{
-			ValidationHandler vh = map.get(a.annotationType());
-			if (vh!=null)
+			CommandHandler ch = map.get(a.annotationType());
+			if (ch!=null)
 			{
-				vh.process(o, args, method);
+				ch.process(o, args, method);
 			}
 		}
 		
